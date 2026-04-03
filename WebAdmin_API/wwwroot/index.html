@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tra Cứu Điểm Thi Quốc Gia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon"><i class="fa-solid fa-database"></i></div>
+            <div class="logo-text">
+                <span class="title">Nexgrade</span>
+                <span class="subtitle">National Admin</span>
+            </div>
+        </div>
+
+        <ul class="menu-list">
+            <li class="active" id="nav-tracuu">
+                <a href="#"><i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Điểm</a>
+            </li>
+            <li id="nav-baocao">
+                <a href="#"><i class="fa-solid fa-chart-pie"></i> Báo Cáo</a>
+            </li>
+            
+        </ul>
+
+        <div class="server-control-panel">
+            <div class="panel-title">TRẠNG THÁI SERVER</div>
+            <div class="control-item">
+                <div class="sv-info"><i class="fa-solid fa-server" style="color: #d63384;"></i> Miền Bắc</div>
+                <label class="toggle-switch"><input type="checkbox" id="toggle-mb" checked><span class="slider"></span></label>
+            </div>
+            <div class="control-item">
+                <div class="sv-info"><i class="fa-solid fa-server" style="color: #0d6efd;"></i> Miền Nam</div>
+                <label class="toggle-switch"><input type="checkbox" id="toggle-mn" checked><span class="slider"></span></label>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-header">
+            <h1 class="page-title">Cổng Tra Cứu Dữ Liệu Phân Tán</h1>
+            <div class="admin-profile">
+                <span>Admin User</span>
+                <div class="avatar"><i class="fa-solid fa-user"></i></div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+
+            <div id="view-tracuu">
+
+                <div class="search-box-container">
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-id-card input-icon"></i>
+                        <input type="text" id="sbdInput" placeholder="Nhập Số Báo Danh (VD: 000305)..." maxlength="6">
+                    </div>
+                    <button id="btnSearch" class="btn-search">
+                        <i class="fa-solid fa-search"></i> Tra Cứu
+                    </button>
+                </div>
+
+                <div id="search-history" style="margin-top: 10px; margin-bottom: 20px; font-size: 13px; color: var(--text-light); padding-left: 10px;">
+                    Lịch sử tra cứu gần đây: <span id="history-list">Chưa có</span>
+                </div>
+
+                <div id="validation-msg" class="msg-error"></div>
+                <div id="statusAlert" class="status-card" style="display: none;"></div>
+
+                <div class="dashboard-grid" id="resultContainer" style="display: none;">
+                    <div class="left-col">
+                        <div class="card server-card" id="serverStatusCard">
+                            <div class="card-header-sm">NGUỒN DỮ LIỆU</div>
+                            <div class="sv-status-row">
+                                <div class="pulse-dot"></div>
+                                <h2 id="outServerSource">SERVER MIỀN BẮC</h2>
+                            </div>
+                            <p class="sv-desc">Kết nối thời gian thực • Độ trễ 12ms</p>
+                            <i class="fa-solid fa-network-wired bg-icon"></i>
+                        </div>
+
+                        <div class="card student-card">
+                            <div class="student-avatar"><i class="fa-solid fa-user-graduate"></i></div>
+                            <h2 id="outName">--</h2>
+                            <div class="sbd-tag">SBD: <span id="outSBD">--</span></div>
+                            <div class="info-list">
+                                <div class="info-row"><span>Định vị mạng:</span><strong id="outMaVung">--</strong></div>
+                                <div class="info-row"><span>Tổ hợp môn:</span><strong id="outToHop" class="highlight-text">--</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-col">
+                        <div class="card score-card">
+                            <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div><i class="fa-solid fa-file-contract"></i> Bảng Điểm Chi Tiết</div>
+                                <button id="btnExportPDF" style="padding: 6px 12px; background: #e1f0ff; color: var(--primary); border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; gap: 5px; align-items: center;">
+                                    <i class="fa-solid fa-file-pdf"></i> Tải PDF
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Môn Thi</th>
+                                            <th style="text-align: right !important; padding-right: 20px;">ĐIỂM SỐ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scoreBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-baocao" style="display: none;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px;">
+                    <div class="card" style="padding: 20px; border-left: 4px solid var(--primary);">
+                        <div style="color: var(--text-light); font-size: 12px; font-weight: 600;">TỔNG SỐ THÍ SINH</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--text-dark); margin-top: 5px;" id="kpiTong">--</div>
+                    </div>
+                    <div class="card" style="padding: 20px; border-left: 4px solid var(--success);">
+                        <div style="color: var(--text-light); font-size: 12px; font-weight: 600;">SỐ THÍ SINH KHTN</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--success); margin-top: 5px;" id="kpiKHTN">--</div>
+                    </div>
+                    <div class="card" style="padding: 20px; border-left: 4px solid var(--warning);">
+                        <div style="color: var(--text-light); font-size: 12px; font-weight: 600;">SỐ THÍ SINH KHXH</div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--warning); margin-top: 5px;" id="kpiKHXH">--</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                    <div class="card" style="padding: 25px; margin-bottom: 0;">
+                        <h3 style="font-size: 15px; margin-bottom: 20px; color: var(--text-dark); display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-chart-column" style="color: var(--primary);"></i> Điểm TB Khối A01 & D01 (Bắc vs Nam)
+                        </h3>
+                        <div style="height: 300px; width: 100%;"><canvas id="scoreChart"></canvas></div>
+                    </div>
+                    <div class="card" style="padding: 25px; margin-bottom: 0;">
+                        <h3 style="font-size: 15px; margin-bottom: 20px; color: var(--text-dark); display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-chart-pie" style="color: var(--warning);"></i> Tỷ Lệ Chọn Tổ Hợp Môn
+                        </h3>
+                        <div style="height: 300px; width: 100%; display: flex; justify-content: center;"><canvas id="ratioChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

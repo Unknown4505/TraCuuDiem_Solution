@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tra Cứu Điểm Thi Quốc Gia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fa-solid fa-database"></i>
+            </div>
+            <div class="logo-text">
+                <span class="title">DISTR_DB</span>
+                <span class="subtitle">National Admin</span>
+            </div>
+        </div>
+
+        <ul class="menu-list">
+            <li class="active">
+                <a href="#">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Tra Cứu Điểm</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Báo Cáo</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Cấu Hình Node</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="server-control-panel">
+            <div class="panel-title">TRẠNG THÁI SERVER</div>
+
+            <div class="control-item">
+                <div class="sv-info">
+                    <i class="fa-solid fa-server" style="color: #d63384;"></i> Miền Bắc
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-mb" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="control-item">
+                <div class="sv-info">
+                    <i class="fa-solid fa-server" style="color: #0d6efd;"></i> Miền Nam
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-mn" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-header">
+            <h1 class="page-title">Cổng Tra Cứu Dữ Liệu Phân Tán</h1>
+            <div class="admin-profile">
+                <span>Admin User</span>
+                <div class="avatar"><i class="fa-solid fa-user"></i></div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="search-box-container">
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-id-card input-icon"></i>
+                    <input type="text" id="sbdInput" placeholder="Nhập Số Báo Danh (VD: 000303)..." maxlength="6">
+                </div>
+                <button id="btnSearch" class="btn-search">
+                    <i class="fa-solid fa-search"></i> Tra Cứu
+                </button>
+            </div>
+            <div id="validation-msg" class="msg-error"></div>
+
+            <div id="statusAlert" class="status-card" style="display: none;"></div>
+
+            <div class="dashboard-grid" id="resultContainer" style="display: none;">
+
+                <div class="left-col">
+                    <div class="card server-card" id="serverStatusCard">
+                        <div class="card-header-sm">NGUỒN DỮ LIỆU</div>
+                        <div class="sv-status-row">
+                            <div class="pulse-dot"></div>
+                            <h2 id="outServerSource">SERVER MIỀN BẮC</h2>
+                        </div>
+                        <p class="sv-desc">Kết nối thời gian thực • Độ trễ 12ms</p>
+                        <i class="fa-solid fa-network-wired bg-icon"></i>
+                    </div>
+
+                    <div class="card student-card">
+                        <div class="student-avatar">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <h2 id="outName">--</h2>
+                        <div class="sbd-tag">SBD: <span id="outSBD">--</span></div>
+
+                        <div class="info-list">
+                            <div class="info-row">
+                                <span>Khu vực thi:</span>
+                                <strong id="outMaVung">--</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Tổ hợp môn:</span>
+                                <strong id="outToHop" class="highlight-text">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="card score-card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-file-contract"></i> Bảng Điểm Chi Tiết
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Môn Thi</th>
+                                        <th class="text-right">Điểm Số</th>
+                                        <th class="text-center">Xếp Loại</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scoreBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>
