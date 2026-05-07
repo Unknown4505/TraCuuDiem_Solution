@@ -1,6 +1,0 @@
-@WebTraCuuDiemThiPhanTan_HostAddress = http://localhost:5114
-
-GET {{WebTraCuuDiemThiPhanTan_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

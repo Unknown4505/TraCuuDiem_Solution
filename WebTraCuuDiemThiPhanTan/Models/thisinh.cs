@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace TraCuuDiem_Solution.Models
 {
@@ -13,10 +13,12 @@ namespace TraCuuDiem_Solution.Models
         // SQL trả về int (1 hoặc 2)
         public int LoaiToHop { get; set; }
 
-        // 3 Môn bắt buộc
-        public double Toan { get; set; }
-        public double Van { get; set; }
-        public double Anh { get; set; }
+        // 3 Môn bắt buộc — dùng double? để phân biệt:
+        //   NULL trong DB  → null trong C# → bị omit trong JSON → UI hiển thị "Không thi"
+        //   0.00 trong DB  → 0.0  trong C# → JSON: 0          → UI hiển thị "0"
+        public double? Toan { get; set; }
+        public double? Van { get; set; }
+        public double? Anh { get; set; }
 
         // Tổ hợp KHTN (Nullable)
         public double? Ly { get; set; }

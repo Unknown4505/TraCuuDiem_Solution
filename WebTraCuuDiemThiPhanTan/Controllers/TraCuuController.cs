@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Http;
 using System.Text.Json;
@@ -13,10 +14,11 @@ namespace WebTraCuuDiemThiPhanTan.Controllers
     public class TraCuuController : ControllerBase
     {
         private readonly ExamRepository _repo;
+        private readonly IConfiguration _configuration; // FIX #5: Inject config thay vì hard-code
 
-        public TraCuuController()
+        public TraCuuController(IConfiguration configuration)
         {
-            // Khởi tạo Repo (nó sẽ tự gọi SqlHelper mới -> tự đọc config Web)
+            _configuration = configuration;
             _repo = new ExamRepository();
         }
 
@@ -121,11 +123,10 @@ namespace WebTraCuuDiemThiPhanTan.Controllers
         {
             try
             {
-                // ⚠️ QUAN TRỌNG: Bạn nhớ thay chữ "TÊN_SERVER_CỦA_BẠN" bằng tên thật trong SQL Server của bạn nhé!
-                // Ví dụ: "Data Source=LAPTOP-HUY\\SQLEXPRESS;..."
-                // Đổi lại tên Server thành localhost và thêm TrustServerCertificate=True
-                string chuoiKetNoi_MB = "Data Source=localhost;Initial Catalog=MienBac;Integrated Security=True;TrustServerCertificate=True";
-                string chuoiKetNoi_MN = "Data Source=localhost;Initial Catalog=MienNam;Integrated Security=True;TrustServerCertificate=True";
+                // FIX #6: Lấy connection string từ appsettings.json qua IConfiguration
+                // Không hard-code → đảm bảo một nguồn cấu hình duy nhất (docx Section 2.2.1)
+                string chuoiKetNoi_MB = _configuration.GetConnectionString("ServerMienBac");
+                string chuoiKetNoi_MN = _configuration.GetConnectionString("ServerMienNam");
 
                 // Chọc thẳng vào 2 Database Bắc/Nam lấy số liệu
                 ThongKeNode thongKeMB = _repo.GetThongKeTuDatabase(chuoiKetNoi_MB);

@@ -1,24 +1,11 @@
-﻿using System;
+using System;
 using Microsoft.Data.SqlClient;
 using TraCuuDiem_Solution.Models;
 using TraCuuDiem_Solution.Utilities;
 
 namespace TraCuuDiem_Solution.Repositories
 {
-    // ========================================================
-    // 1. CLASS KHAY CHỨA DỮ LIỆU THỐNG KÊ
-    // (Đáng lẽ nằm ở thư mục Models, nhưng để chung vào đây cho gọn)
-    // ========================================================
-    public class ThongKeNode
-    {
-        public double DiemTB_Toan { get; set; }
-        public double DiemTB_Van { get; set; }
-        public double DiemTB_Anh { get; set; }
-        public double DiemTB_Ly { get; set; }
-        public double DiemTB_Hoa { get; set; }
-        public int SoLuong_KHTN { get; set; }
-        public int SoLuong_KHXH { get; set; }
-    }
+    // FIX #2: ThongKeNode đã được chuyển sang Models/ThongKeNode.cs (đúng kiến trúc)
 
     // ========================================================
     // 2. CLASS CHÍNH: KẾT NỐI VÀ XỬ LÝ DATABASE
@@ -74,10 +61,10 @@ namespace TraCuuDiem_Solution.Repositories
                                     ketQua.LoaiToHop = 2; // Mặc định Xã hội
                                 }
 
-                                // Điểm bắt buộc
-                                ketQua.Toan = GetDoubleSafe(reader, "Toan");
-                                ketQua.Van = GetDoubleSafe(reader, "Van");
-                                ketQua.Anh = GetDoubleSafe(reader, "Anh");
+                                // Điểm bắt buộc — dùng GetDoubleNullable để phân biệt NULL vs 0
+                                ketQua.Toan = GetDoubleNullable(reader, "Toan");
+                                ketQua.Van  = GetDoubleNullable(reader, "Van");
+                                ketQua.Anh  = GetDoubleNullable(reader, "Anh");
 
                                 // Điểm tự chọn (Cho phép NULL)
                                 ketQua.Ly = GetDoubleNullable(reader, "Ly");
@@ -93,12 +80,16 @@ namespace TraCuuDiem_Solution.Repositories
             }
             catch (SqlException ex)
             {
+                // FIX #4 (docx Section 3.7 – Cơ chế chịu lỗi từng phần):
+                // Lỗi kết nối mạng: timeout(-2), server không tồn tại(53),
+                //   database offline(4060), login failed(18456)
+                // → Trả đúng thông báo "Khu vực này đang bảo trì" theo yêu cầu đề tài
                 if (ex.Number == 53 || ex.Number == -2 || ex.Number == 4060 || ex.Number == 18456)
                 {
-                    string serverName = connectionString.Split(';')[0];
-                    throw new Exception($"Không thể kết nối đến SQL Server ({serverName}). Vui lòng kiểm tra lại file appsettings.json!");
+                    throw new Exception("Khu vực này đang bảo trì, vui lòng thử lại sau.");
                 }
-                throw new Exception($"Lỗi SQL ({ex.Number}): {ex.Message}");
+                // Lỗi SQL khác (stored procedure, dữ liệu) → thông báo kỹ thuật
+                throw new Exception($"Lỗi truy vấn: {ex.Message}");
             }
             catch (Exception ex)
             {

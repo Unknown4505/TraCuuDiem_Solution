@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const toggleMB = document.getElementById('toggle-mb');
     const toggleMN = document.getElementById('toggle-mn');
     const btnSearch = document.getElementById('btnSearch');
@@ -40,14 +40,18 @@
             fetch(`/api/TraCuu/${sbd}`)
                 .then(response => {
                     if (response.ok) return response.json();
-                    else if (response.status === 404) throw new Error("Không tìm thấy thí sinh này.");
-                    else throw new Error("Lỗi hệ thống.");
+                    // FIX #7: Đọc JSON body để lấy message từ server
+                    // → Hiển thị đúng "Khu vực này đang bảo trì" khi Node offline
+                    // → Hiển thị đúng "Không tìm thấy thí sinh này" khi SBD không tồn tại
+                    return response.json().then(err => {
+                        throw new Error(err.message || "Lỗi hệ thống.");
+                    });
                 })
                 .then(data => {
                     statusAlert.style.display = 'none';
                     renderDashboard(data);
                     resultContainer.style.display = 'grid';
-                    saveToHistory(sbd); // Lưu lịch sử
+                    saveToHistory(sbd);
                 })
                 .catch(error => showStatus(false, error.message, "error"));
         }, 800);
@@ -189,7 +193,6 @@
     // 6. TÍNH NĂNG NGẮT SERVER ĐỘT NGỘT (REAL-TIME KILL)
     // ==========================================
 
-    // Bắt sự kiện khi nút gạt Miền Bắc thay đổi
     // Bắt sự kiện khi nút gạt Miền Bắc thay đổi
     toggleMB.addEventListener('change', () => {
         handleServerToggle('MB', toggleMB.checked);
